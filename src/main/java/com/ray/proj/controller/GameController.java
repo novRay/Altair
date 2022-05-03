@@ -1,6 +1,7 @@
 package com.ray.proj.controller;
 
 import com.ray.proj.model.LED;
+import com.ray.proj.view.AltairComponents;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,15 @@ public class GameController extends AltairController {
         this.leds = LEDs;
         this.gameButton1 = gameButton1;
         this.gameButton2 = gameButton2;
+        enabled = false;
+        started = false;
+    }
+
+    public GameController(AltairComponents altairComponents) {
+        super(altairComponents);
+        this.leds = altairComponents.getGameLEDs();
+        this.gameButton1 = altairComponents.getBtn8();
+        this.gameButton2 = altairComponents.getBtn15();
         enabled = false;
         started = false;
     }

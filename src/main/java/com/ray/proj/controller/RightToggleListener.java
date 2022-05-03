@@ -6,20 +6,20 @@ import java.awt.event.ActionListener;
 /**
  * Listener for switches numbered 0 ~ 7
  */
-public class RightSwitchListener implements ActionListener {
+public class RightToggleListener implements ActionListener {
 
     AltairController altairController;
-    private int switchId;
+    private int toggleId;
 
-    public RightSwitchListener(AltairController altairController, int switchId) {
+    public RightToggleListener(AltairController altairController, int toggleId) {
         this.altairController = altairController;
-        this.switchId = switchId;
+        this.toggleId = toggleId;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.printf("Toggled switch %d\n", switchId);
-        altairController.toggle(switchId);
+        System.out.printf("Toggled switch %d\n", toggleId);
+        altairController.toggle(toggleId);
         //TODO: change switch direction on panel
     }
 }

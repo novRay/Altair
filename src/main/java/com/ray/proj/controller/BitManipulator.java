@@ -1,39 +1,27 @@
-package com.ray.proj.model;
+package com.ray.proj.controller;
 
-@Deprecated
-public class BitMap {
+public abstract class BitManipulator {
 
-    private byte bitmap;    // -128 ~ 127
-
-    public BitMap() {
-        bitmap = 0;
-    }
-
-    public void reverseBitAt(int index) {
+    public void reverseBitAt(byte bitmap, int index) {
         if (index > 8 || index < 0) {
             throw new IllegalArgumentException("Index out of bound.");
         }
         bitmap ^= (1 << index);
     }
 
-    public int getBitAt(int index) {
+    public int getBitAt(byte bitmap, int index) {
         if (index > 8 || index < 0) {
             throw new IllegalArgumentException("Index out of bound.");
         }
         return (bitmap >> index) & 1;
     }
 
-    // Get original bitmap with the first bit as the sign bit.
-    public byte getBitmap() {
-        return bitmap;
-    }
-
     // Get actual value
-    public int getValue() {
+    public int getValue(byte bitmap) {
         return Byte.toUnsignedInt(bitmap);
     }
 
-    public void reset() {
+    public void reset(byte bitmap) {
         bitmap = 0;
     }
 }

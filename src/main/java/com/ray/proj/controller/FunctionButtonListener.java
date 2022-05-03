@@ -1,5 +1,8 @@
 package com.ray.proj.controller;
 
+import com.ray.proj.model.LED;
+import com.ray.proj.model.Toggle;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +31,6 @@ public class FunctionButtonListener implements ActionListener {
                 //TODO: turn all lights including three status lights on, enable all function buttons
             }
             case STOP -> {
-                //TODO: stop the game
                 JButton source = (JButton) (e.getSource());
                 source.setEnabled(false);
                 altairController.getFunctionBtns()[RUN].setEnabled(true);
@@ -41,31 +43,36 @@ public class FunctionButtonListener implements ActionListener {
                 altairController.startGame();
             }
             case EXAMINE ->  {
-                altairController.examine();
-                //TODO: show D-LED(s) according to memory value
-                //TODO: show A-LED(s) according to switches
+                int value = altairController.examine();
+                updateToggles();
+                showDLEDs(value);
+                showALEDs();
             }
             case EXAMINE_NEXT -> {
-                int address = 1; // hard coded value for testing, should be obtained from A0~A7 View
-                altairController.examineAt(address);
-                //TODO: light next LED
+                int value = altairController.examineNext();
+                showALEDs();
+                showDLEDs(value);
             }
             case DEPOSIT -> {
-                int address = 0;    // hard coded value for testing, should be obtained from A0~A7 View
-                altairController.deposit(address);
-                //TODO: show D-LED(s) according to memory value just deposited
+                int value = altairController.deposit();
+                showDLEDs(value);
             }
             case DEPOSIT_NEXT -> {
-                int address = 1;    // // hard coded value for testing, should be obtained from A0~A7 View
-                altairController.deposit(address);
+                int value = altairController.depositNext();
+                showALEDs();
+                showDLEDs(value);
             }
             case RESET -> {
                 //TODO: turn all LEDs on and then turn all off
                 altairController.reset();   //trivial method
+                showALEDs();
+                showDLEDs(0);
             }
             case CLR -> {
                 //TODO: turn all LEDs on and then turn all off
                 altairController.clear();
+                showALEDs();
+                showDLEDs(0);
             }
         }
     }
@@ -76,5 +83,45 @@ public class FunctionButtonListener implements ActionListener {
 
     public AltairController getAltairController() {
         return altairController;
+    }
+
+    private void updateToggles() {
+        byte toggleMap = altairController.getToggleMap();
+        for (int i = 0; i < 8; i++) {
+            Toggle toggle = altairController.getToggles()[i];
+            if ((toggleMap & 1) == 1) {
+                toggle.pushUp();
+            } else {
+                toggle.pullDown();
+            }
+            toggleMap >>= 1;
+        }
+    }
+
+    // show A-LED(s) according to toggles
+    private void showALEDs() {
+        byte ledMap = altairController.getLedMap();
+        for (int i = 0; i < 8; i++) {
+            LED led = altairController.getALEDs()[i];
+            if ((ledMap & 1) == 1) {
+                led.turnOn();
+            } else {
+                led.turnOff();
+            }
+            ledMap >>= 1;
+        }
+    }
+
+    //show D-LED(s) according to memory value
+    private void showDLEDs(int value) {
+        for (int i = 0; i < 8; i++) {
+            LED led = altairController.getDLEDs()[i];
+            if ((value & 1) == 1) {
+                led.turnOn();
+            } else {
+                led.turnOff();
+            }
+            value >>= 1;
+        }
     }
 }

@@ -22,9 +22,9 @@ public class ControllerTest {
         ac.toggle(0);
         assertEquals(3, ac.examine());  // value at address 0000 0000 should be 0000 0011
 
-        ac.setMemory(128, 55);  // store 0011 0111 at address 1000 0000
-        ac.toggle(7);
-        assertEquals(55, ac.examine()); // value at address 1000 0000 should be 0011 0111
-        ac.toggle(7);
+//        ac.setMemory(128, 55);  // store 0011 0111 at address 1000 0000
+//        ac.toggle(7);
+//        assertEquals(55, ac.examine()); // value at address 1000 0000 should be 0011 0111
+//        ac.toggle(7);
     }
 }

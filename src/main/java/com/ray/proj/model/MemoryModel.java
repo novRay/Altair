@@ -2,6 +2,7 @@ package com.ray.proj.model;
 
 import java.util.Arrays;
 
+@Deprecated
 public class MemoryModel {
 
     public final int NUM_BIT = 8;
