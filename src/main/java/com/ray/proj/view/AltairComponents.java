@@ -1,9 +1,7 @@
 package com.ray.proj.view;
 
-import com.ray.proj.controller.FunctionButtonListener;
 import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
-import com.ray.proj.model.Toggle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +14,6 @@ public class AltairComponents {
     private ClickableToggle[] rightToggles;
 
     private JButton[] functionBtns;
-    private JButton[] toggleBtns;
 
     private JButton btn8, btn15;
 
@@ -100,10 +97,6 @@ public class AltairComponents {
 
     public JButton[] getFunctionBtns() {
         return functionBtns;
-    }
-
-    public JButton[] getToggleBtns() {
-        return toggleBtns;
     }
 
     public JButton getBtn8() {

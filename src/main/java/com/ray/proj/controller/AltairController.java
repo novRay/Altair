@@ -28,16 +28,6 @@ public class AltairController extends BitManipulator {
     private JButton[] functionBtns;
     private Toggle[] functionToggles;
 
-//    private int stepCursor;
-
-    public AltairController(JButton[] functionBtns) {
-        this.functionBtns = functionBtns;
-        memory = new byte[256];
-        ledMap = 0;
-        toggleMap = 0;
-//        stepCursor = 0;
-    }
-
     public AltairController(AltairComponents altairComponents) {
         DLEDs = altairComponents.getDLEDs();
         ALEDs = altairComponents.getALEDs();
@@ -48,14 +38,9 @@ public class AltairController extends BitManipulator {
         toggleMap = 0;
     }
 
-    public AltairController() {
-        memory = new byte[256];
-        ledMap = 0;
-        toggleMap = 0;
-    }
-
     /**
-     * Examine data at binary address represented by 8 switches
+     * Examines data at binary address represented by 8 switches
+     *
      * @return Data at binary address represented by 8 switches
      */
     public int examine() {
@@ -65,7 +50,8 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Examine data at given address
+     * Examines data at given address
+     *
      * @param address Data address
      * @return Data at given address
      */
@@ -74,7 +60,8 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Examine data at next address represented by A0~A7 LEDs
+     * Examines data at next address represented by A0~A7 LEDs
+     *
      * @return Data at next address
      */
     public int examineNext() {
@@ -83,7 +70,8 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Store data represented by 8 switches at given address
+     * Stores data represented by 8 switches at given address
+     *
      * @param address Memory location according to the A0~A7 LEDs
      */
     public void deposit(int address) {
@@ -91,7 +79,9 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Store data represented by 8 toggles at address represented by A0~A7 LEDs
+     * Stores data represented by 8 toggles at address represented by A0~A7 LEDs
+     *
+     * @return stored data value
      */
     public int deposit() {
         int ret = getValue(toggleMap);
@@ -100,6 +90,11 @@ public class AltairController extends BitManipulator {
         return ret;
     }
 
+    /**
+     * Stores data represented by 8 toggles at next address according to current LEDs
+     *
+     * @return stored data value
+     */
     public int depositNext() {
         int ret = getValue(toggleMap);
         int address = getValue(++ledMap);
@@ -107,13 +102,15 @@ public class AltairController extends BitManipulator {
         return ret;
     }
 
-
+    /**
+     * Zeros out LED map
+     */
     public void reset() {
         ledMap = 0;
     }
 
     /**
-     * Set 0 for all memory locations
+     * Zeros out LED map and all memory locations
      */
     public void clear() {
         reset();
@@ -124,6 +121,7 @@ public class AltairController extends BitManipulator {
 
     /**
      * Switch memory toggle at #{index}
+     *
      * @param index at which the toggle to be switched
      * @return the bit at index after reversed
      */
@@ -143,6 +141,11 @@ public class AltairController extends BitManipulator {
         memory[address] = (byte) value;
     }
 
+    /**
+     * Increments one at given address
+     *
+     * @param address of memory to be incremented
+     */
     public void addOneAt(int address) {
         if (address > memory.length || address < 0) {
             throw new IllegalArgumentException("Address out of bound.");
