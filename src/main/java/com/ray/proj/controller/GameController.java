@@ -11,46 +11,35 @@ import java.awt.event.KeyEvent;
 
 public class GameController extends AltairController {
 
-    private static final int EASY = 0;
-    private static final int MEDIUM = 1;
-    private static final int HARD = 2;
+    // game status constant
+    private static final int PREPARING = 0;
+    private static final int SERVING = 1;
+    private static final int IN_PROGRESS = 2;
 
     private GameListener gameListener1, gameListener2;
 
-    public JButton gameButton1, gameButton2;
-    private LED[] leds;
+    private final JButton gameButton1, gameButton2;    // game "paddles" for two players
+    private final LED[] leds;   // LEDs for displaying ball's movement track
 
-    private int speed;
-    private int acceleration;
-    private boolean started;
-    private boolean enabled;
+    private int interval;          // ball's moving interval, lower value is faster
+    private int acceleration;   // ball's moving acceleration
+    private int state;         // game state: preparing, serving or in-progress
 
-    private boolean hitLeft, hitRight;
-    private Timer timer1, timer2;
-
-
-    public GameController(LED[] LEDs, JButton gameButton1, JButton gameButton2, JButton[] functionBtns) {
-        super(functionBtns);
-        this.leds = LEDs;
-        this.gameButton1 = gameButton1;
-        this.gameButton2 = gameButton2;
-        enabled = false;
-        started = false;
-    }
+    private boolean hitLeft, hitRight;  // player state
+    private Timer timer1, timer2;   // two timers for controlling moving direction
 
     public GameController(AltairComponents altairComponents) {
         super(altairComponents);
         this.leds = altairComponents.getGameLEDs();
         this.gameButton1 = altairComponents.getBtn8();
         this.gameButton2 = altairComponents.getBtn15();
-        enabled = false;
-        started = false;
+        state = PREPARING;
     }
 
     public void startGame() {
         turnAllOff();
-        enabled = true;
-        speed = examineAt(GAME_SPEED_ADDRESS);
+        state = SERVING;
+        interval = calculateInterval(examineAt(GAME_SPEED_ADDRESS));
         acceleration = examineAt(GAME_ACC_ADDRESS);
         gameListener1 = new GameListener();
         gameListener2 = new GameListener();
@@ -63,32 +52,28 @@ public class GameController extends AltairController {
 
     public void endGame() {
         turnAllOff();
-        enabled = false;
-        started = false;
+        state = PREPARING;
         gameButton1.removeKeyListener(gameListener1);
         gameButton2.removeKeyListener(gameListener2);
-        timer1.stop();
-        timer2.stop();
+        if (timer1 != null) {
+            timer1.stop();
+        }
+        if (timer2 != null) {
+            timer2.stop();
+        }
         System.out.println("Stop");
     }
 
-    private void moveRightToLeft() {
-        moveLeftNext();
-    }
-
-    private void moveLeftToRight() {
-        moveRightNext();
-    }
-
     private void moveLeftNext() {
-        if (!enabled) {
+        if (state == PREPARING) {
             return;
         }
-        timer1 = new Timer(200, new ActionListener() {
+        timer1 = new Timer(interval, new ActionListener() {
             private int currId = 7;
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!enabled) {
+                if (state == PREPARING) {
                     return;
                 }
                 if (currId > 0) {
@@ -96,11 +81,14 @@ public class GameController extends AltairController {
                     currId--;
                     leds[currId].turnOn();
                 } else {
-                    ((Timer)e.getSource()).stop();
+                    // ball reaches left edge
+                    ((Timer) e.getSource()).stop();
                     if (hitLeft) {
+                        // player1 manages to hit, switch direction and reset player1's state
                         hitLeft = false;
                         moveRightNext();
                     } else {
+                        // player1 fails to hit, penalize one score and keep the direction
                         addOneAt(PLAYER1_ADDRESS);
                         System.out.println("Player 1 missed! Total miss: " + examineAt(PLAYER1_ADDRESS));
                         leds[0].turnOff();
@@ -113,14 +101,15 @@ public class GameController extends AltairController {
     }
 
     private void moveRightNext() {
-        if (!enabled) {
+        if (state == PREPARING) {
             return;
         }
-        timer2 = new Timer(200, new ActionListener() {
+        timer2 = new Timer(interval, new ActionListener() {
             private int currId = 0;
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!enabled) {
+                if (state == PREPARING) {
                     return;
                 }
                 if (currId < 7) {
@@ -128,11 +117,14 @@ public class GameController extends AltairController {
                     currId++;
                     leds[currId].turnOn();
                 } else {
-                    ((Timer)e.getSource()).stop();
+                    // ball reaches right edge
+                    ((Timer) e.getSource()).stop();
                     if (hitRight) {
+                        // player2 manages to hit, switch direction and reset player1's state
                         hitRight = false;
                         moveLeftNext();
                     } else {
+                        // player1 fails to hit, penalize one score and keep the direction
                         addOneAt(PLAYER2_ADDRESS);
                         System.out.println("Player 2 missed! Total miss: " + examineAt(PLAYER2_ADDRESS));
                         leds[7].turnOff();
@@ -144,6 +136,12 @@ public class GameController extends AltairController {
         timer2.start();
     }
 
+    /**
+     * Checks whether the LED has been lighted when player strokes the key.
+     * If not, increments corresponding player's missed-count
+     *
+     * @param ledId The index of LED to be checked
+     */
     private void checkHit(int ledId) {
         if (ledId == 0) {
             if (!leds[ledId].isLighted()) {
@@ -152,7 +150,7 @@ public class GameController extends AltairController {
             } else {
                 hitLeft = true;
             }
-        } else {
+        } else if (ledId == 7) {
             if (!leds[ledId].isLighted()) {
                 addOneAt(AltairController.PLAYER2_ADDRESS);
                 System.out.println("Player 2 too early! Total miss: " + examineAt(PLAYER2_ADDRESS));
@@ -162,32 +160,43 @@ public class GameController extends AltairController {
         }
     }
 
-    public class GameListener extends KeyAdapter {
+    /**
+     * A keyListener for monitoring player's keystroke action.
+     * If game state is serving, turns it into in-progress.
+     * If game state is in-progress, checks if it is a hit.
+     * Otherwise, gives no response.
+     */
+    private class GameListener extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_1 -> {
                     //TODO: set switch
-                    if (!started) {
+                    if (state == SERVING) {
                         System.out.println("Player 1 starts the game!");
-                        started = true;
-                        moveLeftToRight();
+                        state = IN_PROGRESS;
+                        moveRightNext();
                     } else {
                         checkHit(0);
                     }
                 }
                 case KeyEvent.VK_0 -> {
                     //TODO: set switch
-                    if (!started) {
+                    if (state == SERVING) {
                         System.out.println("Player 2 starts the game!");
-                        started = true;
-                        moveRightToLeft();
+                        state = IN_PROGRESS;
+                        moveLeftNext();
                     } else {
                         checkHit(7);
                     }
                 }
             }
         }
+    }
+
+    private int calculateInterval(int v) {
+        // interval = e^(-v/120 + 6) + 25, ranging from 73ms to 428ms
+        return (int) (Math.exp(-v / 120 + 6) + 25);
     }
 
     public void turnAllOn() {
