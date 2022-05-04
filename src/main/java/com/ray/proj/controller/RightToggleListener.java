@@ -18,8 +18,12 @@ public class RightToggleListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.printf("Toggled switch %d\n", toggleId);
-        altairController.toggle(toggleId);
-        //TODO: change switch direction on panel
+        System.out.printf("Toggled at %d\n", toggleId);
+        int bit = altairController.toggle(toggleId);
+        if (bit == 1) {
+            altairController.getToggles()[toggleId].pushUp();
+        } else {
+            altairController.getToggles()[toggleId].pullDown();
+        }
     }
 }

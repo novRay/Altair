@@ -44,14 +44,14 @@ public class FunctionButtonListener implements ActionListener {
             }
             case EXAMINE ->  {
                 int value = altairController.examine();
-                updateToggles();
+                System.out.println("Examined value is :" + value);
                 showDLEDs(value);
                 showALEDs();
             }
             case EXAMINE_NEXT -> {
                 int value = altairController.examineNext();
-                showALEDs();
                 showDLEDs(value);
+                showALEDs();
             }
             case DEPOSIT -> {
                 int value = altairController.deposit();
@@ -59,12 +59,12 @@ public class FunctionButtonListener implements ActionListener {
             }
             case DEPOSIT_NEXT -> {
                 int value = altairController.depositNext();
-                showALEDs();
                 showDLEDs(value);
+                showALEDs();
             }
             case RESET -> {
                 //TODO: turn all LEDs on and then turn all off
-                altairController.reset();   //trivial method
+                altairController.reset();
                 showALEDs();
                 showDLEDs(0);
             }
@@ -85,20 +85,7 @@ public class FunctionButtonListener implements ActionListener {
         return altairController;
     }
 
-    private void updateToggles() {
-        byte toggleMap = altairController.getToggleMap();
-        for (int i = 0; i < 8; i++) {
-            Toggle toggle = altairController.getToggles()[i];
-            if ((toggleMap & 1) == 1) {
-                toggle.pushUp();
-            } else {
-                toggle.pullDown();
-            }
-            toggleMap >>= 1;
-        }
-    }
-
-    // show A-LED(s) according to toggles
+    // show A-LED(s) according to LED map
     private void showALEDs() {
         byte ledMap = altairController.getLedMap();
         for (int i = 0; i < 8; i++) {

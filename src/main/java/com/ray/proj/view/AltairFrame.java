@@ -3,14 +3,13 @@ package com.ray.proj.view;
 import com.ray.proj.controller.AltairController;
 import com.ray.proj.controller.FunctionButtonListener;
 import com.ray.proj.controller.GameController;
+import com.ray.proj.controller.RightToggleListener;
+import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
-import com.ray.proj.model.Toggle;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static com.ray.proj.controller.FunctionTypeField.RUN;
-import static com.ray.proj.controller.FunctionTypeField.STOP;
 
 public class AltairFrame extends JFrame {
 
@@ -20,11 +19,10 @@ public class AltairFrame extends JFrame {
 
     private JLabel background;
 
-    //TODO: encapsulate below members
     AltairComponents altairComponents;
 
     public AltairFrame() {
-        // TODO: load background panel, LEDs, switches and other static resources
+        // load background panel, LEDs, switches and other static resources
         frame = new JFrame("Altair8800 Computer");
         frame.setBounds(0, 0, 1500, 700);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -50,7 +48,8 @@ public class AltairFrame extends JFrame {
         for (LED led : altairComponents.getDLEDs()) {
             frame.add(led.getLabel());
         }
-        for (Toggle toggle : altairComponents.getRightToggles()) {
+        for (ClickableToggle toggle : altairComponents.getRightToggles()) {
+            frame.add(toggle.getButton());
             frame.add(toggle.getLabel());
         }
         for (int i = 0; i < 10; i++) {
@@ -75,6 +74,11 @@ public class AltairFrame extends JFrame {
         JButton[] functionBtns = altairController.getFunctionBtns();
         for (int i = 0; i < functionBtns.length; i++) {
             functionBtns[i].addActionListener(new FunctionButtonListener(altairController, i));
+        }
+
+        ClickableToggle[] rightToggles = altairComponents.getRightToggles();
+        for (int i = 0; i < rightToggles.length; i++) {
+            rightToggles[i].getButton().addActionListener(new RightToggleListener(altairController, i));
         }
     }
 

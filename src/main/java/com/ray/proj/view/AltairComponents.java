@@ -1,6 +1,7 @@
 package com.ray.proj.view;
 
 import com.ray.proj.controller.FunctionButtonListener;
+import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
 import com.ray.proj.model.Toggle;
 
@@ -12,7 +13,7 @@ public class AltairComponents {
     private LED[] gameLEDs;
     private LED[] ALEDs;
     private LED[] DLEDs;
-    private Toggle[] rightToggles;
+    private ClickableToggle[] rightToggles;
 
     private JButton[] functionBtns;
     private JButton[] toggleBtns;
@@ -42,9 +43,9 @@ public class AltairComponents {
     }
 
     private void loadToggles() {
-        rightToggles = new Toggle[8];
+        rightToggles = new ClickableToggle[8];
         for (int i = 0; i < 8; i++) {
-            rightToggles[i] = new Toggle(1250 - 50 * i, 300, 30, 30, false);
+            rightToggles[i] = new ClickableToggle(1250 - 50 * i, 300, 30, 30, false);
         }
     }
 
@@ -93,7 +94,7 @@ public class AltairComponents {
         return DLEDs;
     }
 
-    public Toggle[] getRightToggles() {
+    public ClickableToggle[] getRightToggles() {
         return rightToggles;
     }
 

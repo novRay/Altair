@@ -1,5 +1,6 @@
 package com.ray.proj.controller;
 
+import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
 import com.ray.proj.model.Toggle;
 import com.ray.proj.view.AltairComponents;
@@ -21,7 +22,7 @@ public class AltairController extends BitManipulator {
     private LED[] ALEDs;    // A0~A7 LEDs
     private byte ledMap;    // 8-bit map for LED 0~7. 0 represents turned-off. 1 represents turned-on.
 
-    private Toggle[] toggles;   // toggle 0~7
+    private ClickableToggle[] toggles;   // toggle 0~7
     private byte toggleMap;    // 8-bit map for toggle 0~7. 0 represents toggled down. 1 represents toggled up
 
     private JButton[] functionBtns;
@@ -59,6 +60,7 @@ public class AltairController extends BitManipulator {
      */
     public int examine() {
         int address = getValue(toggleMap);
+        ledMap = toggleMap;
         return getValue(memory[address]);
     }
 
@@ -121,11 +123,14 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Toggle memory switch at #{index}
-     * @param index at which the switch to be toggled
+     * Switch memory toggle at #{index}
+     * @param index at which the toggle to be switched
+     * @return the bit at index after reversed
      */
-    public void toggle(int index) {
-        reverseBitAt(toggleMap, index);
+    public int toggle(int index) {
+        toggleMap = reverseBitAt(toggleMap, index);
+        printMaps();
+        return getBitAt(toggleMap, index);
     }
 
     public void setMemory(int address, int value) {
@@ -157,7 +162,7 @@ public class AltairController extends BitManipulator {
         return ALEDs;
     }
 
-    public Toggle[] getToggles() {
+    public ClickableToggle[] getToggles() {
         return toggles;
     }
 
@@ -175,5 +180,10 @@ public class AltairController extends BitManipulator {
 
     public byte getToggleMap() {
         return toggleMap;
+    }
+
+    public void printMaps() {
+        System.out.println("Toggle map is :" + Integer.toString(toggleMap, 2));
+        System.out.println("LED map is :" + Integer.toString(ledMap, 2));
     }
 }

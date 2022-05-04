@@ -2,11 +2,11 @@ package com.ray.proj.controller;
 
 public abstract class BitManipulator {
 
-    public void reverseBitAt(byte bitmap, int index) {
+    public byte reverseBitAt(byte bitmap, int index) {
         if (index > 8 || index < 0) {
             throw new IllegalArgumentException("Index out of bound.");
         }
-        bitmap ^= (1 << index);
+        return (byte) (bitmap ^ (1 << index));
     }
 
     public int getBitAt(byte bitmap, int index) {
