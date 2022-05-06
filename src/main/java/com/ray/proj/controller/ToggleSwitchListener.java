@@ -4,14 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Listener for switches numbered 0 ~ 7
+ * ActionListener for toggle switches 0 ~ 15
  */
-public class RightToggleListener implements ActionListener {
+public class ToggleSwitchListener implements ActionListener {
 
     AltairController altairController;
-    private int toggleId;
+    private final int toggleId;
 
-    public RightToggleListener(AltairController altairController, int toggleId) {
+    public ToggleSwitchListener(AltairController altairController, int toggleId) {
         this.altairController = altairController;
         this.toggleId = toggleId;
     }

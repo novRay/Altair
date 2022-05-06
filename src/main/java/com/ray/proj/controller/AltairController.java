@@ -16,27 +16,29 @@ public class AltairController extends BitManipulator {
 
     public final int MAX_VALUE = 255;
 
-    private byte[] memory;  // byte array for memory data storage, represented by D0~D7 LEDs
-    private LED[] DLEDs;    // D0~D7 LEDs for presenting stored data
+    private final byte[] memory;  // byte array for memory data storage, represented by D0~D7 LEDs
+    private final LED[] DLEDs;    // D0~D7 LEDs for presenting stored data
 
-    private LED[] ALEDs;    // A0~A7 LEDs
+    private final LED[] ALEDs;    // A0~A7 LEDs
     private byte ledMap;    // 8-bit map for LED 0~7. 0 represents turned-off. 1 represents turned-on.
 
-    private ClickableToggle[] toggles;   // toggle 0~7
-    private byte toggleMap;    // 8-bit map for toggle 0~7. 0 represents toggled down. 1 represents toggled up
+    private final ClickableToggle[] toggles;   // toggle 0~15
+    private byte rightToggleMap;    // 8-bit map for toggle 0~7. 0 represents toggled down. 1 represents toggled up
+    private byte leftToggleMap;     // 8-bit map for toggle 8~15
 
-    private JButton[] functionBtns;
-    private Toggle[] functionToggles;
+    private final JButton[] functionBtns;
+    private final Toggle[] functionToggles;
 
     public AltairController(AltairComponents altairComponents) {
         DLEDs = altairComponents.getDLEDs();
         ALEDs = altairComponents.getALEDs();
-        toggles = altairComponents.getRightToggles();
+        toggles = altairComponents.getToggleSwitches();
         functionBtns = altairComponents.getFunctionBtns();
         functionToggles = altairComponents.getFunctionToggles();
         memory = new byte[256];
         ledMap = 0;
-        toggleMap = 0;
+        rightToggleMap = 0;
+        leftToggleMap = 0;
     }
 
     /**
@@ -45,8 +47,8 @@ public class AltairController extends BitManipulator {
      * @return Data at binary address represented by 8 switches
      */
     public int examine() {
-        int address = getValue(toggleMap);
-        ledMap = toggleMap;
+        int address = getValue(rightToggleMap);
+        ledMap = rightToggleMap;
         return getValue(memory[address]);
     }
 
@@ -76,7 +78,7 @@ public class AltairController extends BitManipulator {
      * @param address Memory location according to the A0~A7 LEDs
      */
     public void deposit(int address) {
-        memory[address] = toggleMap;
+        memory[address] = rightToggleMap;
     }
 
     /**
@@ -85,9 +87,9 @@ public class AltairController extends BitManipulator {
      * @return stored data value
      */
     public int deposit() {
-        int ret = getValue(toggleMap);
+        int ret = getValue(rightToggleMap);
         int address = getValue(ledMap);
-        memory[address] = toggleMap;
+        memory[address] = rightToggleMap;
         return ret;
     }
 
@@ -97,9 +99,9 @@ public class AltairController extends BitManipulator {
      * @return stored data value
      */
     public int depositNext() {
-        int ret = getValue(toggleMap);
+        int ret = getValue(rightToggleMap);
         int address = getValue(++ledMap);
-        memory[address] = toggleMap;
+        memory[address] = rightToggleMap;
         return ret;
     }
 
@@ -127,9 +129,14 @@ public class AltairController extends BitManipulator {
      * @return the bit at index after reversed
      */
     public int toggle(int index) {
-        toggleMap = reverseBitAt(toggleMap, index);
-        printMaps();
-        return getBitAt(toggleMap, index);
+        if (index < 8) {
+            rightToggleMap = reverseBitAt(rightToggleMap, index);
+            printMaps();
+            return getBitAt(rightToggleMap, index);
+        } else {
+            leftToggleMap = reverseBitAt(leftToggleMap, index - 8);
+            return getBitAt(leftToggleMap, index - 8);
+        }
     }
 
     public void setMemory(int address, int value) {
@@ -206,12 +213,16 @@ public class AltairController extends BitManipulator {
         return ledMap;
     }
 
-    public byte getToggleMap() {
-        return toggleMap;
+    public byte getRightToggleMap() {
+        return rightToggleMap;
+    }
+
+    public byte getLeftToggleMap() {
+        return leftToggleMap;
     }
 
     public void printMaps() {
-        System.out.println("Toggle map is :" + Integer.toString(toggleMap, 2));
+        System.out.println("Toggle map is :" + Integer.toString(rightToggleMap, 2));
         System.out.println("LED map is :" + Integer.toString(ledMap, 2));
     }
 }

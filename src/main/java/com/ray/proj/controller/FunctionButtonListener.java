@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 
 import static com.ray.proj.controller.FunctionTypeField.*;
 
+/**
+ * ActionListener for function buttons
+ */
 public class FunctionButtonListener implements ActionListener {
 
     private final int functionType;
@@ -35,6 +38,7 @@ public class FunctionButtonListener implements ActionListener {
             case ON -> {
                 altairController.getFunctionToggles()[0].pullDown();
                 setAllBtnsEnabled(true);
+                altairController.getFunctionBtns()[ON].setEnabled(false);
                 flink();
                 //TODO: turn status lights on
             }
@@ -91,14 +95,6 @@ public class FunctionButtonListener implements ActionListener {
                 flink();
             }
         }
-    }
-
-    public int getFunctionType() {
-        return functionType;
-    }
-
-    public AltairController getAltairController() {
-        return altairController;
     }
 
     // show A-LED(s) according to LED map

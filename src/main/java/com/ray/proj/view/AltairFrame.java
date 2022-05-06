@@ -3,7 +3,7 @@ package com.ray.proj.view;
 import com.ray.proj.controller.AltairController;
 import com.ray.proj.controller.FunctionButtonListener;
 import com.ray.proj.controller.GameController;
-import com.ray.proj.controller.RightToggleListener;
+import com.ray.proj.controller.ToggleSwitchListener;
 import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
 
@@ -47,7 +47,7 @@ public class AltairFrame extends JFrame {
         for (LED led : altairComponents.getDLEDs()) {
             frame.add(led.getLabel());
         }
-        for (ClickableToggle toggle : altairComponents.getRightToggles()) {
+        for (ClickableToggle toggle : altairComponents.getToggleSwitches()) {
             frame.add(toggle.getButton());
             frame.add(toggle.getLabel());
         }
@@ -57,8 +57,6 @@ public class AltairFrame extends JFrame {
         for (int i = 0; i < 9; i++) {
             frame.add(altairComponents.getFunctionToggles()[i].getLabel());
         }
-        frame.add(altairComponents.getBtn8());
-        frame.add(altairComponents.getBtn15());
         frame.add(background);
         frame.setVisible(true);
     }
@@ -78,9 +76,9 @@ public class AltairFrame extends JFrame {
             functionBtns[i].addActionListener(new FunctionButtonListener(altairController, i));
         }
 
-        ClickableToggle[] rightToggles = altairComponents.getRightToggles();
+        ClickableToggle[] rightToggles = altairComponents.getToggleSwitches();
         for (int i = 0; i < rightToggles.length; i++) {
-            rightToggles[i].getButton().addActionListener(new RightToggleListener(altairController, i));
+            rightToggles[i].getButton().addActionListener(new ToggleSwitchListener(altairController, i));
         }
     }
 

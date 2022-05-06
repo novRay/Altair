@@ -12,18 +12,18 @@ public class AltairComponents {
     private LED[] gameLEDs;
     private LED[] ALEDs;
     private LED[] DLEDs;
-    private ClickableToggle[] rightToggles;
+    private ClickableToggle[] toggleSwitches; // toggle 0~15
 
     private JButton[] functionBtns;
     private Toggle[] functionToggles;
 
-    private JButton btn8, btn15;
 
     public AltairComponents() {
         loadLEDs();
         loadToggles();
         loadButtons();
     }
+
     private void loadLEDs() {
         gameLEDs = new LED[8];
         for (int i = 0; i < 8; i++) {
@@ -41,10 +41,6 @@ public class AltairComponents {
         }
     }
 
-    public Toggle[] getFunctionToggles() {
-        return functionToggles;
-    }
-
     private void loadToggles() {
         functionToggles = new Toggle[9];
         for (int i = 0; i < 9; i++) {
@@ -52,10 +48,14 @@ public class AltairComponents {
         }
         functionToggles[0].pushUp();    // init power toggle as 'off'
 
-        rightToggles = new ClickableToggle[8];
+        toggleSwitches = new ClickableToggle[16];
         for (int i = 0; i < 8; i++) {
-            rightToggles[i] = new ClickableToggle(1250 - 50 * i, 300, 30, 30, false);
+            toggleSwitches[i] = new ClickableToggle(1250 - 50 * i, 300, 30, 30, false);
         }
+        for (int i = 8; i < 16; i++) {
+            toggleSwitches[i] = new ClickableToggle(1050 - 50 * i, 300, 30, 30, false);
+        }
+
     }
 
     private void loadButtons() {
@@ -81,18 +81,6 @@ public class AltairComponents {
             i += 2;
         }
         functionBtns[1].setEnabled(true);   // enable 'ON' button
-
-        btn8 = new JButton();
-        btn8.setBounds(780, 350, 45, 20);
-        btn8.setContentAreaFilled(false);
-        btn8.setFocusPainted(false);
-//        btn8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        btn15 = new JButton();
-        btn15.setBounds(345, 350, 45, 20);
-        btn15.setContentAreaFilled(false);
-        btn15.setFocusPainted(false);
-//        btn15.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     public LED[] getGameLEDs() {
@@ -107,19 +95,16 @@ public class AltairComponents {
         return DLEDs;
     }
 
-    public ClickableToggle[] getRightToggles() {
-        return rightToggles;
+    public ClickableToggle[] getToggleSwitches() {
+        return toggleSwitches;
     }
 
     public JButton[] getFunctionBtns() {
         return functionBtns;
     }
 
-    public JButton getBtn8() {
-        return btn8;
+    public Toggle[] getFunctionToggles() {
+        return functionToggles;
     }
 
-    public JButton getBtn15() {
-        return btn15;
-    }
 }

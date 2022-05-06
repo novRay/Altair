@@ -1,6 +1,8 @@
 package com.ray.proj.controller;
 
+import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
+import com.ray.proj.model.Toggle;
 import com.ray.proj.view.AltairComponents;
 
 import javax.swing.*;
@@ -8,17 +10,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Time;
 
 public class GameController extends AltairController {
 
-    // game status constant
+    // game state constant
     private static final int PREPARING = 0;
     private static final int SERVING = 1;
     private static final int IN_PROGRESS = 2;
 
     private GameListener gameListener1, gameListener2;
 
-    private final JButton gameButton1, gameButton2;    // game "paddles" for two players
+    private final ClickableToggle gameToggle1, gameToggle2;    // game "paddles" for two players
     private final LED[] GameLEDs;   // LEDs for displaying ball's movement track
 
     private int interval;          // ball's moving interval, lower value is faster
@@ -31,8 +34,8 @@ public class GameController extends AltairController {
     public GameController(AltairComponents altairComponents) {
         super(altairComponents);
         this.GameLEDs = altairComponents.getGameLEDs();
-        this.gameButton1 = altairComponents.getBtn8();
-        this.gameButton2 = altairComponents.getBtn15();
+        this.gameToggle2 = altairComponents.getToggleSwitches()[8];
+        this.gameToggle1 = altairComponents.getToggleSwitches()[15];
         state = PREPARING;
     }
 
@@ -43,25 +46,26 @@ public class GameController extends AltairController {
         acceleration = examineAt(GAME_ACC_ADDRESS);
         gameListener1 = new GameListener();
         gameListener2 = new GameListener();
-        gameButton1.addKeyListener(gameListener1);
-        gameButton2.addKeyListener(gameListener2);
-        gameButton1.requestFocus();
-        gameButton1.doClick();
-        System.out.println("Start");
+        gameToggle1.getButton().addKeyListener(gameListener1);
+        gameToggle2.getButton().addKeyListener(gameListener2);
+        gameToggle1.getButton().requestFocus();
+//        gameToggle1.getButton().doClick();
+//        gameToggle1.getButton().doClick();
+        System.out.println("Game started.");
     }
 
     public void endGame() {
         turnAllGameLEDsOff();
         state = PREPARING;
-        gameButton1.removeKeyListener(gameListener1);
-        gameButton2.removeKeyListener(gameListener2);
+        gameToggle1.getButton().removeKeyListener(gameListener1);
+        gameToggle2.getButton().removeKeyListener(gameListener2);
         if (timer1 != null) {
             timer1.stop();
         }
         if (timer2 != null) {
             timer2.stop();
         }
-        System.out.println("Stop");
+        System.out.println("Game stopped");
     }
 
     private void moveLeftNext() {
@@ -171,9 +175,9 @@ public class GameController extends AltairController {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_1 -> {
-                    //TODO: set switch
+                    toggle(gameToggle1);
                     if (state == SERVING) {
-                        System.out.println("Player 1 starts the game!");
+                        System.out.println("Player 1 served the ball!");
                         state = IN_PROGRESS;
                         moveRightNext();
                     } else {
@@ -181,9 +185,9 @@ public class GameController extends AltairController {
                     }
                 }
                 case KeyEvent.VK_0 -> {
-                    //TODO: set switch
+                    toggle(gameToggle2);
                     if (state == SERVING) {
-                        System.out.println("Player 2 starts the game!");
+                        System.out.println("Player 2 served the ball!");
                         state = IN_PROGRESS;
                         moveLeftNext();
                     } else {
@@ -192,6 +196,15 @@ public class GameController extends AltairController {
                 }
             }
         }
+    }
+
+    private void toggle(Toggle t) {
+        t.pushUp();
+        Timer timer = new Timer(100, e -> {
+            t.pullDown();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 
     private int calculateInterval(int v) {
