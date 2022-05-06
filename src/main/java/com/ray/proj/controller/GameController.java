@@ -19,7 +19,7 @@ public class GameController extends AltairController {
     private GameListener gameListener1, gameListener2;
 
     private final JButton gameButton1, gameButton2;    // game "paddles" for two players
-    private final LED[] leds;   // LEDs for displaying ball's movement track
+    private final LED[] GameLEDs;   // LEDs for displaying ball's movement track
 
     private int interval;          // ball's moving interval, lower value is faster
     private int acceleration;   // ball's moving acceleration
@@ -30,14 +30,14 @@ public class GameController extends AltairController {
 
     public GameController(AltairComponents altairComponents) {
         super(altairComponents);
-        this.leds = altairComponents.getGameLEDs();
+        this.GameLEDs = altairComponents.getGameLEDs();
         this.gameButton1 = altairComponents.getBtn8();
         this.gameButton2 = altairComponents.getBtn15();
         state = PREPARING;
     }
 
     public void startGame() {
-        turnAllOff();
+        turnAllGameLEDsOff();
         state = SERVING;
         interval = calculateInterval(examineAt(GAME_SPEED_ADDRESS));
         acceleration = examineAt(GAME_ACC_ADDRESS);
@@ -51,7 +51,7 @@ public class GameController extends AltairController {
     }
 
     public void endGame() {
-        turnAllOff();
+        turnAllGameLEDsOff();
         state = PREPARING;
         gameButton1.removeKeyListener(gameListener1);
         gameButton2.removeKeyListener(gameListener2);
@@ -77,9 +77,9 @@ public class GameController extends AltairController {
                     return;
                 }
                 if (currId > 0) {
-                    leds[currId].turnOff();
+                    GameLEDs[currId].turnOff();
                     currId--;
-                    leds[currId].turnOn();
+                    GameLEDs[currId].turnOn();
                 } else {
                     // ball reaches left edge
                     ((Timer) e.getSource()).stop();
@@ -91,7 +91,7 @@ public class GameController extends AltairController {
                         // player1 fails to hit, penalize one score and keep the direction
                         addOneAt(PLAYER1_ADDRESS);
                         System.out.println("Player 1 missed! Total miss: " + examineAt(PLAYER1_ADDRESS));
-                        leds[0].turnOff();
+                        GameLEDs[0].turnOff();
                         moveLeftNext();
                     }
                 }
@@ -113,9 +113,9 @@ public class GameController extends AltairController {
                     return;
                 }
                 if (currId < 7) {
-                    leds[currId].turnOff();
+                    GameLEDs[currId].turnOff();
                     currId++;
-                    leds[currId].turnOn();
+                    GameLEDs[currId].turnOn();
                 } else {
                     // ball reaches right edge
                     ((Timer) e.getSource()).stop();
@@ -127,7 +127,7 @@ public class GameController extends AltairController {
                         // player1 fails to hit, penalize one score and keep the direction
                         addOneAt(PLAYER2_ADDRESS);
                         System.out.println("Player 2 missed! Total miss: " + examineAt(PLAYER2_ADDRESS));
-                        leds[7].turnOff();
+                        GameLEDs[7].turnOff();
                         moveRightNext();
                     }
                 }
@@ -144,14 +144,14 @@ public class GameController extends AltairController {
      */
     private void checkHit(int ledId) {
         if (ledId == 0) {
-            if (!leds[ledId].isLighted()) {
+            if (!GameLEDs[ledId].isLighted()) {
                 addOneAt(PLAYER1_ADDRESS);
                 System.out.println("Player 1 too early! Total miss: " + examineAt(PLAYER1_ADDRESS));
             } else {
                 hitLeft = true;
             }
         } else if (ledId == 7) {
-            if (!leds[ledId].isLighted()) {
+            if (!GameLEDs[ledId].isLighted()) {
                 addOneAt(AltairController.PLAYER2_ADDRESS);
                 System.out.println("Player 2 too early! Total miss: " + examineAt(PLAYER2_ADDRESS));
             } else {
@@ -199,18 +199,16 @@ public class GameController extends AltairController {
         return (int) (Math.exp(-v / 120 + 6) + 25);
     }
 
-    public void turnAllOn() {
-        for (LED led : leds) {
+    public void turnAllGameLEDsOn() {
+        for (LED led : GameLEDs) {
             led.turnOn();
         }
-        System.out.println("All on");
     }
 
-    public void turnAllOff() {
-        for (LED led : leds) {
+    public void turnAllGameLEDsOff() {
+        for (LED led : GameLEDs) {
             led.turnOff();
         }
-        System.out.println("All Off!");
     }
 
 }

@@ -24,55 +24,71 @@ public class FunctionButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (functionType) {
             case OFF -> {
-                // TODO: turn all lights off, disable all function buttons except 'ON'
+                altairController.getFunctionToggles()[0].pushUp();
                 altairController.clear();
+                altairController.endGame(); // end running game
+                setAllBtnsEnabled(false);
+                altairController.getFunctionBtns()[ON].setEnabled(true);
+                turnAllLEDsOff();
+                //TODO: turn status lights off
             }
             case ON -> {
-                //TODO: turn all lights including three status lights on, enable all function buttons
+                altairController.getFunctionToggles()[0].pullDown();
+                setAllBtnsEnabled(true);
+                flink();
+                //TODO: turn status lights on
             }
             case STOP -> {
+                pushUpToggle(altairController.getFunctionToggles()[1]);
                 JButton source = (JButton) (e.getSource());
                 source.setEnabled(false);
                 altairController.getFunctionBtns()[RUN].setEnabled(true);
                 altairController.endGame();
             }
             case RUN -> {
+                pullDownToggle(altairController.getFunctionToggles()[1]);
                 JButton source = (JButton) (e.getSource());
                 source.setEnabled(false);
                 altairController.getFunctionBtns()[STOP].setEnabled(true);
                 altairController.startGame();
             }
             case EXAMINE ->  {
+                pushUpToggle(altairController.getFunctionToggles()[2]);
                 int value = altairController.examine();
                 System.out.println("Examined value is :" + value);
                 showDLEDs(value);
                 showALEDs();
             }
             case EXAMINE_NEXT -> {
+                pullDownToggle(altairController.getFunctionToggles()[2]);
                 int value = altairController.examineNext();
                 showDLEDs(value);
                 showALEDs();
             }
             case DEPOSIT -> {
+                pushUpToggle(altairController.getFunctionToggles()[3]);
                 int value = altairController.deposit();
                 showDLEDs(value);
             }
             case DEPOSIT_NEXT -> {
+                pullDownToggle(altairController.getFunctionToggles()[3]);
                 int value = altairController.depositNext();
                 showDLEDs(value);
                 showALEDs();
             }
             case RESET -> {
-                //TODO: turn all LEDs on and then turn all off
+                pushUpToggle(altairController.getFunctionToggles()[4]);
                 altairController.reset();
                 showALEDs();
                 showDLEDs(0);
+                flink();
             }
             case CLR -> {
-                //TODO: turn all LEDs on and then turn all off
+                pullDownToggle(altairController.getFunctionToggles()[4]);
                 altairController.clear();
                 showALEDs();
                 showDLEDs(0);
+                flink();
             }
         }
     }
@@ -110,5 +126,48 @@ public class FunctionButtonListener implements ActionListener {
             }
             value >>= 1;
         }
+    }
+
+    private void setAllBtnsEnabled(boolean b) {
+        for (JButton btn : altairController.getFunctionBtns()) {
+            btn.setEnabled(b);
+        }
+    }
+
+    private void flink() {
+        turnAllLEDsOn();
+        Timer timer = new Timer(650, e -> {
+            turnAllLEDsOff();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void turnAllLEDsOn() {
+        altairController.turnAllOn();
+        altairController.turnAllGameLEDsOn();
+    }
+
+    private void turnAllLEDsOff() {
+        altairController.turnAllOff();
+        altairController.turnAllGameLEDsOff();
+    }
+
+    private void pullDownToggle(Toggle t) {
+        t.pullDown();
+        Timer timer = new Timer(400, e -> {
+            t.reset();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void pushUpToggle(Toggle t) {
+        t.pushUp();
+        Timer timer = new Timer(400, e -> {
+            t.reset();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 }

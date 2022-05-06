@@ -30,11 +30,10 @@ public class AltairFrame extends JFrame {
         loadBackground();
         altairComponents = new AltairComponents();
 
-//        altairController = new GameController(gameLEDs, btn8, btn15, functionBtns);
         altairController = new GameController(altairComponents);
 
 
-        // TODO: for each button pair, add actionListeners
+        // for each button pair, add actionListeners
         addListenersForBtns();
 
 
@@ -54,6 +53,9 @@ public class AltairFrame extends JFrame {
         }
         for (int i = 0; i < 10; i++) {
             frame.add(altairComponents.getFunctionBtns()[i]);
+        }
+        for (int i = 0; i < 9; i++) {
+            frame.add(altairComponents.getFunctionToggles()[i].getLabel());
         }
         frame.add(altairComponents.getBtn8());
         frame.add(altairComponents.getBtn15());

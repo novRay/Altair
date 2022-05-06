@@ -33,6 +33,7 @@ public class AltairController extends BitManipulator {
         ALEDs = altairComponents.getALEDs();
         toggles = altairComponents.getRightToggles();
         functionBtns = altairComponents.getFunctionBtns();
+        functionToggles = altairComponents.getFunctionToggles();
         memory = new byte[256];
         ledMap = 0;
         toggleMap = 0;
@@ -70,7 +71,7 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Stores data represented by 8 switches at given address
+     * Stores data represented by 8 switches at given binary address
      *
      * @param address Memory location according to the A0~A7 LEDs
      */
@@ -79,7 +80,7 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Stores data represented by 8 toggles at address represented by A0~A7 LEDs
+     * Stores data represented by 8 toggles at binary address represented by A0~A7 LEDs
      *
      * @return stored data value
      */
@@ -91,7 +92,7 @@ public class AltairController extends BitManipulator {
     }
 
     /**
-     * Stores data represented by 8 toggles at next address according to current LEDs
+     * Stores data represented by 8 toggles at next binary address represented by A0~A7 LEDs
      *
      * @return stored data value
      */
@@ -151,6 +152,30 @@ public class AltairController extends BitManipulator {
             throw new IllegalArgumentException("Address out of bound.");
         }
         memory[address]++;
+    }
+
+    /**
+     * Turns A0~A7 and D0~D7 on
+     */
+    public void turnAllOn() {
+        for (LED led : ALEDs) {
+            led.turnOn();
+        }
+        for (LED led : DLEDs) {
+            led.turnOn();
+        }
+    }
+
+    /**
+     * Turns A0~A7 and D0~D7 off
+     */
+    public void turnAllOff() {
+        for (LED led : ALEDs) {
+            led.turnOff();
+        }
+        for (LED led : DLEDs) {
+            led.turnOff();
+        }
     }
 
     public JButton[] getFunctionBtns() {

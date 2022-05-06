@@ -2,6 +2,7 @@ package com.ray.proj.view;
 
 import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
+import com.ray.proj.model.Toggle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,7 @@ public class AltairComponents {
     private ClickableToggle[] rightToggles;
 
     private JButton[] functionBtns;
+    private Toggle[] functionToggles;
 
     private JButton btn8, btn15;
 
@@ -39,7 +41,17 @@ public class AltairComponents {
         }
     }
 
+    public Toggle[] getFunctionToggles() {
+        return functionToggles;
+    }
+
     private void loadToggles() {
+        functionToggles = new Toggle[9];
+        for (int i = 0; i < 9; i++) {
+            functionToggles[i] = new Toggle(295 + 100 * i, 450, 30, 30, true);
+        }
+        functionToggles[0].pushUp();    // init power toggle as 'off'
+
         rightToggles = new ClickableToggle[8];
         for (int i = 0; i < 8; i++) {
             rightToggles[i] = new ClickableToggle(1250 - 50 * i, 300, 30, 30, false);
@@ -56,6 +68,7 @@ public class AltairComponents {
             functionBtns[i].setContentAreaFilled(false);
             functionBtns[i].setFocusPainted(false);
             functionBtns[i].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            functionBtns[i].setEnabled(false);
 
             functionBtns[i + 1] = new JButton();
             functionBtns[i + 1].setBounds(295 + 50 * i, 480, 45, 20);
@@ -63,20 +76,23 @@ public class AltairComponents {
             functionBtns[i + 1].setContentAreaFilled(false);
             functionBtns[i + 1].setFocusPainted(false);
             functionBtns[i + 1].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            functionBtns[i + 1].setEnabled(false);
+
             i += 2;
         }
+        functionBtns[1].setEnabled(true);   // enable 'ON' button
 
         btn8 = new JButton();
         btn8.setBounds(780, 350, 45, 20);
         btn8.setContentAreaFilled(false);
         btn8.setFocusPainted(false);
-        btn8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        btn8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         btn15 = new JButton();
         btn15.setBounds(345, 350, 45, 20);
         btn15.setContentAreaFilled(false);
         btn15.setFocusPainted(false);
-        btn15.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        btn15.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     public LED[] getGameLEDs() {
