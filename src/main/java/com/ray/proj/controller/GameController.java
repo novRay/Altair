@@ -10,26 +10,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Time;
+import java.util.TimerTask;
 
 public class GameController extends AltairController {
 
     // game state constant
-    private static final int PREPARING = 0;
-    private static final int SERVING = 1;
-    private static final int IN_PROGRESS = 2;
+    private static final int PREPARING = 0;     // game program not running
+    private static final int SERVING = 1;       // waiting for either player to serve
+    private static final int IN_PROGRESS = 2;   // game in progress
 
-    private GameListener gameListener1, gameListener2;
+    private int state;              // game state: preparing, serving or in-progress
+    private int interval;           // moving interval, ranging from 98ms to 453ms
+    private double acceleration;    // moving acceleration rate, ranging from 0% to 5.1%
 
-    private final ClickableToggle gameToggle1, gameToggle2;    // game "paddles" for two players
-    private final LED[] GameLEDs;   // LEDs for displaying ball's movement track
+    private final ClickableToggle gameToggle1, gameToggle2; // game "paddles" for two players
+    private GameListener gameListener1, gameListener2;      // keystroke listener
+    private final LED[] GameLEDs;                           // LEDs for displaying ball's movement track
 
-    private int interval;          // ball's moving interval, lower value is faster
-    private int acceleration;   // ball's moving acceleration
-    private int state;         // game state: preparing, serving or in-progress
-
-    private boolean hitLeft, hitRight;  // player state
-    private Timer timer1, timer2;   // two timers for controlling moving direction
+    private Timer timer1, timer2;       // two timers for moving direction control
+    private boolean hitLeft, hitRight;  // players' state
 
     public GameController(AltairComponents altairComponents) {
         super(altairComponents);
@@ -43,7 +42,7 @@ public class GameController extends AltairController {
         turnAllGameLEDsOff();
         state = SERVING;
         interval = calculateInterval(examineAt(GAME_SPEED_ADDRESS));
-        acceleration = examineAt(GAME_ACC_ADDRESS);
+        acceleration = calculateAcc(examineAt(GAME_ACC_ADDRESS));
         gameListener1 = new GameListener();
         gameListener2 = new GameListener();
         gameToggle1.getButton().addKeyListener(gameListener1);
@@ -68,11 +67,11 @@ public class GameController extends AltairController {
         System.out.println("Game stopped");
     }
 
-    private void moveLeftNext() {
+    private void moveLeftNext(int lastInterval) {
         if (state == PREPARING) {
             return;
         }
-        timer1 = new Timer(interval, new ActionListener() {
+        timer1 = new Timer(Math.min(lastInterval, interval), new ActionListener() {
             private int currId = 7;
 
             @Override
@@ -84,19 +83,20 @@ public class GameController extends AltairController {
                     GameLEDs[currId].turnOff();
                     currId--;
                     GameLEDs[currId].turnOn();
+                    timer1.setDelay((int) (timer1.getDelay() * (1 - acceleration)));
                 } else {
                     // ball reaches left edge
                     ((Timer) e.getSource()).stop();
                     if (hitLeft) {
                         // player1 manages to hit, switch direction and reset player1's state
                         hitLeft = false;
-                        moveRightNext();
+                        moveRightNext(timer1.getDelay());
                     } else {
                         // player1 fails to hit, penalize one score and keep the direction
                         addOneAt(PLAYER1_ADDRESS);
                         System.out.println("Player 1 missed! Total miss: " + examineAt(PLAYER1_ADDRESS));
                         GameLEDs[0].turnOff();
-                        moveLeftNext();
+                        moveLeftNext(interval);
                     }
                 }
             }
@@ -104,11 +104,11 @@ public class GameController extends AltairController {
         timer1.start();
     }
 
-    private void moveRightNext() {
+    private void moveRightNext(int lastInterval) {
         if (state == PREPARING) {
             return;
         }
-        timer2 = new Timer(interval, new ActionListener() {
+        timer2 = new Timer(Math.min(lastInterval, interval), new ActionListener() {
             private int currId = 0;
 
             @Override
@@ -120,19 +120,20 @@ public class GameController extends AltairController {
                     GameLEDs[currId].turnOff();
                     currId++;
                     GameLEDs[currId].turnOn();
+                    timer2.setDelay((int) (timer2.getDelay() * (1 - acceleration)));
                 } else {
                     // ball reaches right edge
                     ((Timer) e.getSource()).stop();
                     if (hitRight) {
                         // player2 manages to hit, switch direction and reset player1's state
                         hitRight = false;
-                        moveLeftNext();
+                        moveLeftNext(timer2.getDelay());
                     } else {
                         // player1 fails to hit, penalize one score and keep the direction
                         addOneAt(PLAYER2_ADDRESS);
                         System.out.println("Player 2 missed! Total miss: " + examineAt(PLAYER2_ADDRESS));
                         GameLEDs[7].turnOff();
-                        moveRightNext();
+                        moveRightNext(interval);
                     }
                 }
             }
@@ -179,7 +180,7 @@ public class GameController extends AltairController {
                     if (state == SERVING) {
                         System.out.println("Player 1 served the ball!");
                         state = IN_PROGRESS;
-                        moveRightNext();
+                        moveRightNext(interval);
                     } else {
                         checkHit(0);
                     }
@@ -189,7 +190,7 @@ public class GameController extends AltairController {
                     if (state == SERVING) {
                         System.out.println("Player 2 served the ball!");
                         state = IN_PROGRESS;
-                        moveLeftNext();
+                        moveLeftNext(interval);
                     } else {
                         checkHit(7);
                     }
@@ -208,8 +209,12 @@ public class GameController extends AltairController {
     }
 
     private int calculateInterval(int v) {
-        // interval = e^(-v/120 + 6) + 25, ranging from 73ms to 428ms
-        return (int) (Math.exp(-v / 120 + 6) + 25);
+        // interval = e^(-v/120 + 6) + 25, ranging from 98ms to 453ms
+        return (int) (Math.exp(-(double) v / 120 + 6) + 50);
+    }
+
+    private double calculateAcc(int a) {
+        return (double) a / 5000;   // range from 0% to 5.1%
     }
 
     public void turnAllGameLEDsOn() {
