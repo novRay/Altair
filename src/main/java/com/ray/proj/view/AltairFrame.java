@@ -37,7 +37,7 @@ public class AltairFrame extends JFrame {
         addListenersForBtns();
 
 
-        // TODO: add all components to frame
+        // add all components to frame
         for (LED led : altairComponents.getGameLEDs()) {
             frame.add(led.getLabel());
         }

@@ -9,10 +9,10 @@ import java.awt.*;
 
 public class AltairComponents {
 
-    private LED[] gameLEDs;
-    private LED[] ALEDs;
-    private LED[] DLEDs;
-    private ClickableToggle[] toggleSwitches; // toggle 0~15
+    private LED[] gameLEDs;                     // LED A8~A15
+    private LED[] ALEDs;                        // LED A0~A7
+    private LED[] DLEDs;                        // LED D0~D7
+    private ClickableToggle[] toggleSwitches;   // toggle 0~15
 
     private JButton[] functionBtns;
     private Toggle[] functionToggles;

@@ -9,18 +9,18 @@ import javax.swing.*;
 
 public class AltairController extends BitManipulator {
 
-    public static final int PLAYER1_ADDRESS = 0;
-    public static final int PLAYER2_ADDRESS = 1;
-    public static final int GAME_SPEED_ADDRESS = 2;
-    public static final int GAME_ACC_ADDRESS = 3;
+    protected static final int PLAYER1_ADDRESS = 0;
+    protected static final int PLAYER2_ADDRESS = 1;
+    protected static final int GAME_SPEED_ADDRESS = 2;
+    protected static final int GAME_ACC_ADDRESS = 3;
 
-    public final int MAX_VALUE = 255;
+    public final int MAX_VALUE = 0xFF;
 
     private final byte[] memory;  // byte array for memory data storage, represented by D0~D7 LEDs
     private final LED[] DLEDs;    // D0~D7 LEDs for presenting stored data
 
-    private final LED[] ALEDs;    // A0~A7 LEDs
-    private byte ledMap;    // 8-bit map for LED 0~7. 0 represents turned-off. 1 represents turned-on.
+    private final LED[] ALEDs;  // A0~A7 LEDs
+    private byte ledMap;        // 8-bit map for LED 0~7. 0 represents turned-off. 1 represents turned-on.
 
     private final ClickableToggle[] toggles;   // toggle 0~15
     private byte rightToggleMap;    // 8-bit map for toggle 0~7. 0 represents toggled down. 1 represents toggled up
@@ -70,15 +70,6 @@ public class AltairController extends BitManipulator {
     public int examineNext() {
         int address = getValue(++ledMap);
         return getValue(memory[address]);
-    }
-
-    /**
-     * Stores data represented by 8 switches at given binary address
-     *
-     * @param address Memory location according to the A0~A7 LEDs
-     */
-    public void deposit(int address) {
-        memory[address] = rightToggleMap;
     }
 
     /**
@@ -139,16 +130,6 @@ public class AltairController extends BitManipulator {
         }
     }
 
-    public void setMemory(int address, int value) {
-        if (address > memory.length || address < 0) {
-            throw new IllegalArgumentException("Address out of bound.");
-        }
-        if (value > MAX_VALUE) {
-            throw new IllegalArgumentException("Value out of bound.");
-        }
-        memory[address] = (byte) value;
-    }
-
     /**
      * Increments one at given address
      *
@@ -205,20 +186,8 @@ public class AltairController extends BitManipulator {
         return functionToggles;
     }
 
-    public byte[] getMemory() {
-        return memory;
-    }
-
     public byte getLedMap() {
         return ledMap;
-    }
-
-    public byte getRightToggleMap() {
-        return rightToggleMap;
-    }
-
-    public byte getLeftToggleMap() {
-        return leftToggleMap;
     }
 
     public void printMaps() {
