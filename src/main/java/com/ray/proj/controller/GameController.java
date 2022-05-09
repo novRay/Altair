@@ -1,5 +1,6 @@
 package com.ray.proj.controller;
 
+import com.ray.proj.controller.util.Sound;
 import com.ray.proj.model.ClickableToggle;
 import com.ray.proj.model.LED;
 import com.ray.proj.model.Toggle;
@@ -173,6 +174,7 @@ public class GameController extends AltairController {
     private class GameListener extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
+            new Sound("toggle").start();
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_1 -> {
                     toggle(gameToggle1);

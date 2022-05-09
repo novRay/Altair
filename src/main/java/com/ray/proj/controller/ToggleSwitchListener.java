@@ -1,5 +1,7 @@
 package com.ray.proj.controller;
 
+import com.ray.proj.controller.util.Sound;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +20,7 @@ public class ToggleSwitchListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        new Sound("switch").start();
         System.out.printf("Toggled at %d\n", toggleId);
         int bit = altairController.toggle(toggleId);
         if (bit == 1) {

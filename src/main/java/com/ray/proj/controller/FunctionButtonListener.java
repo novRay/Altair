@@ -1,5 +1,6 @@
 package com.ray.proj.controller;
 
+import com.ray.proj.controller.util.Sound;
 import com.ray.proj.model.LED;
 import com.ray.proj.model.Toggle;
 
@@ -25,6 +26,7 @@ public class FunctionButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        new Sound("toggle").start();
         switch (functionType) {
             case OFF -> {
                 altairController.getFunctionToggles()[0].pushUp();
@@ -36,6 +38,7 @@ public class FunctionButtonListener implements ActionListener {
                 //TODO: turn status lights off
             }
             case ON -> {
+                new Sound("beepbeep").start();
                 altairController.getFunctionToggles()[0].pullDown();
                 setAllBtnsEnabled(true);
                 altairController.getFunctionBtns()[ON].setEnabled(false);
