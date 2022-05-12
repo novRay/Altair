@@ -25,36 +25,102 @@ public class AltairComponents {
     }
 
     private void loadLEDs() {
-        gameLEDs = new LED[8];
-        for (int i = 0; i < 8; i++) {
-            gameLEDs[i] = new LED(354 + 50 * i, 238, 22, 22);
-        }
+//        gameLEDs = new LED[8];
+//        for (int i = 0; i < 8; i++) {
+//            gameLEDs[i] = new LED(354 + 50 * i, 238, 22, 22);
+//        }
 
+        //A15~A8
+        gameLEDs=new LED[8];
+        gameLEDs[0]=new LED(354,238,22,22);
+        for(int i=1;i<4;i++){
+            gameLEDs[i]=new LED(432+52*(i-1),238,22,22);
+        }
+        for(int i=4;i<7;i++){
+            gameLEDs[i]=new LED(614+52*(i-4),238,22,22);
+        }
+        gameLEDs[7]=new LED(799,238,22,22);
+
+//        ALEDs = new LED[8];
+//        for (int i = 0; i < 8; i++) {
+//          ALEDs[i] = new LED(1250 - 50 * i, 238, 22, 22);
+//        }
+        //A0~A7
         ALEDs = new LED[8];
-        for (int i = 0; i < 8; i++) {
-            ALEDs[i] = new LED(1250 - 50 * i, 238, 22, 22);
+        for (int i = 0; i < 3; i++) {
+            ALEDs[i] = new LED(1268 - 52 * i, 238, 22, 22);
+        }
+        for(int i=3;i<6;i++){
+            ALEDs[i] = new LED(1086 - 52 * (i-3), 238, 22, 22);
+        }
+        for(int i=6;i<8;i++){
+            ALEDs[i] = new LED(904 - 52 * (i-6), 238, 22, 22);
         }
 
-        DLEDs = new LED[8];
-        for (int i = 0; i < 8; i++) {
-            DLEDs[i] = new LED(1250 - 50 * i, 100, 22, 22);
+
+
+//        DLEDs = new LED[8];
+//        for (int i = 0; i < 8; i++) {
+//            DLEDs[i] = new LED(1250 - 50 * i, 125, 22, 22);
+//        }
+
+        //D0~D7
+        //y可置130
+        DLEDs =new LED[8];
+        for (int i = 0; i < 3; i++) {
+            DLEDs[i] = new LED(1268 - 52 * i, 128, 22, 22);
+        }
+        for(int i=3;i<6;i++){
+            DLEDs[i] = new LED(1086 - 52 * (i-3), 128, 22, 22);
+        }
+        for(int i=6;i<8;i++){
+            DLEDs[i] = new LED(904 - 52 * (i-6), 128, 22, 22);
         }
     }
 
     private void loadToggles() {
         functionToggles = new Toggle[9];
-        for (int i = 0; i < 9; i++) {
-            functionToggles[i] = new Toggle(295 + 100 * i, 450, 30, 30, true);
+        functionToggles[0]=new Toggle(103,453,30,30,true);
+        for (int i = 1; i < 3; i++) {
+            functionToggles[i] = new Toggle(255 + 100 * i, 453, 30, 30, true);
         }
+        functionToggles[3]=new Toggle(560,453,30,30,true);
+        functionToggles[4]=new Toggle(660,453,30,30,true);
+        functionToggles[5]=new Toggle(767,453,30,30,true);
+        functionToggles[6]=new Toggle(872,453,30,30,true);
+        functionToggles[7]=new Toggle(977,453,30,30,true);
+        functionToggles[8]=new Toggle(1083,453,30,30,true);
+
         functionToggles[0].pushUp();    // init power toggle as 'off'
 
-        toggleSwitches = new ClickableToggle[16];
-        for (int i = 0; i < 8; i++) {
-            toggleSwitches[i] = new ClickableToggle(1250 - 50 * i, 300, 30, 30, false);
+//        toggleSwitches = new ClickableToggle[16];
+//        for (int i = 0; i < 8; i++) {
+//            toggleSwitches[i] = new ClickableToggle(1250 - 50 * i, 350, 30, 30, false);
+//        }
+//        for (int i = 8; i < 16; i++) {
+//            toggleSwitches[i] = new ClickableToggle(1050 - 50 * i, 350, 30, 30, false);
+//        }
+
+        //toggleSwitches0~15
+        toggleSwitches=new ClickableToggle[16];
+        for(int i=0;i<3;i++){
+            toggleSwitches[i]=new ClickableToggle(1265-52*i,350,30,30,false);
         }
-        for (int i = 8; i < 16; i++) {
-            toggleSwitches[i] = new ClickableToggle(1050 - 50 * i, 300, 30, 30, false);
+        for(int i=3;i<6;i++){
+            toggleSwitches[i]=new ClickableToggle(1083-52*(i-3),350,30,30,false);
         }
+        for(int i=6;i<8;i++){
+            toggleSwitches[i]=new ClickableToggle(901- 52 * (i-6),350,30,30,false);
+        }
+        toggleSwitches[8]=new ClickableToggle(796,350,30,30,false);
+        for(int i=9;i<12;i++){
+            toggleSwitches[i]=new ClickableToggle(715-52*(i-9),350,30,30,false);
+        }
+        for(int i=12;i<15;i++){
+            toggleSwitches[i]=new ClickableToggle(533-52*(i-12),350,30,30,false);
+        }
+        toggleSwitches[15]=new ClickableToggle(351,350,30,30,false);
+
 
     }
 
