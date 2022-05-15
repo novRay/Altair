@@ -129,7 +129,7 @@ public class AltairComponents {
 
         for (int i = 0; i < 10;) {
             functionBtns[i] = new JButton();
-            functionBtns[i].setBounds(295 + 50 * i, 435, 45, 20);
+//            functionBtns[i].setBounds(295 + 50 * i, 435, 45, 20);
             //      stopBtn.setBorderPainted(false);
             functionBtns[i].setContentAreaFilled(false);
             functionBtns[i].setFocusPainted(false);
@@ -141,11 +141,23 @@ public class AltairComponents {
             //      stopBtn.setBorderPainted(false);
             functionBtns[i + 1].setContentAreaFilled(false);
             functionBtns[i + 1].setFocusPainted(false);
-            functionBtns[i + 1].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//            functionBtns[i + 1].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             functionBtns[i + 1].setEnabled(false);
 
             i += 2;
         }
+        functionBtns[0].setBounds(96,435,45,20);
+        functionBtns[1].setBounds(96,480,45,20);
+        functionBtns[2].setBounds(345,435,45,20);
+        functionBtns[3].setBounds(345,480,45,20);
+        functionBtns[4].setBounds(550,435,45,20);
+        functionBtns[5].setBounds(550,480,45,20);
+        functionBtns[6].setBounds(655,435,45,20);
+        functionBtns[7].setBounds(655,480,45,20);
+        functionBtns[8].setBounds(760,435,45,20);
+        functionBtns[9].setBounds(760,480,45,20);
+
+
         functionBtns[1].setEnabled(true);   // enable 'ON' button
     }
 

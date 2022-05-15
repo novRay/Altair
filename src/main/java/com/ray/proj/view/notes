@@ -1,0 +1,8 @@
+AltairFrame:
+创建构造函数实现下列功能
+（1）添加frame,设置布局方式，设置背景；
+（2）添加其他组件，并设置监听器
+
+AltairComponents：
+初始化LED和Toggle（生成LED和Toggle，并设置参数）
+
