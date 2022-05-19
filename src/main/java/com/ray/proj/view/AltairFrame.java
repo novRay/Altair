@@ -13,7 +13,7 @@ import java.awt.*;
 
 public class AltairFrame extends JFrame {
 
-    private JFrame frame;
+    private final JFrame frame;
     AltairController altairController;
     ImageIcon BACKGROUND = new ImageIcon(getClass().getResource("/img/panel.png"));
 
@@ -45,6 +45,9 @@ public class AltairFrame extends JFrame {
             frame.add(led.getLabel());
         }
         for (LED led : altairComponents.getDLEDs()) {
+            frame.add(led.getLabel());
+        }
+        for (LED led : altairComponents.getStatusLEDs()) {
             frame.add(led.getLabel());
         }
         for (ClickableToggle toggle : altairComponents.getToggleSwitches()) {
