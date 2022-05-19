@@ -12,6 +12,7 @@ public class AltairComponents {
     private LED[] gameLEDs;                     // LED A8~A15
     private LED[] ALEDs;                        // LED A0~A7
     private LED[] DLEDs;                        // LED D0~D7
+    private LED[] statusLEDs;                   // LED status 12
     private ClickableToggle[] toggleSwitches;   // toggle 0~15
 
     private JButton[] functionBtns;
@@ -52,14 +53,23 @@ public class AltairComponents {
         //D0~D7
         DLEDs = new LED[8];
         for (int i = 0; i < 3; i++) {
-            DLEDs[i] = new LED(1268 - 52 * i, 128, 22, 22);
+            DLEDs[i] = new LED(1268 - 52 * i, 125, 22, 22);
         }
         for (int i = 3; i < 6; i++) {
-            DLEDs[i] = new LED(1086 - 52 * (i - 3), 128, 22, 22);
+            DLEDs[i] = new LED(1086 - 52 * (i - 3), 125, 22, 22);
         }
         for (int i = 6; i < 8; i++) {
-            DLEDs[i] = new LED(904 - 52 * (i - 6), 128, 22, 22);
+            DLEDs[i] = new LED(904 - 52 * (i - 6), 125, 22, 22);
         }
+
+        //status 12
+        statusLEDs = new LED[12];
+        for (int i = 0; i < 10; i++) {
+            statusLEDs[i] = new LED(200 + 52 * i, 125, 22, 22);
+        }
+        statusLEDs[10] = new LED(200, 238, 22, 22);
+        statusLEDs[11] = new LED(250, 238, 22, 22);
+
     }
 
     private void loadToggles() {
@@ -105,14 +115,14 @@ public class AltairComponents {
 
         for (int i = 0; i < 10; i += 2) {
             functionBtns[i] = new JButton();
-            //      stopBtn.setBorderPainted(false);
+            functionBtns[i].setBorderPainted(false);
             functionBtns[i].setContentAreaFilled(false);
             functionBtns[i].setFocusPainted(false);
             functionBtns[i].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             functionBtns[i].setEnabled(false);
 
             functionBtns[i + 1] = new JButton();
-            //      stopBtn.setBorderPainted(false);
+            functionBtns[i + 1].setBorderPainted(false);
             functionBtns[i + 1].setContentAreaFilled(false);
             functionBtns[i + 1].setFocusPainted(false);
             functionBtns[i + 1].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -144,6 +154,11 @@ public class AltairComponents {
     public LED[] getDLEDs() {
         return DLEDs;
     }
+
+    public LED[] getStatusLEDs() {
+        return statusLEDs;
+    }
+
 
     public ClickableToggle[] getToggleSwitches() {
         return toggleSwitches;

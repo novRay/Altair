@@ -35,7 +35,7 @@ public class FunctionButtonListener implements ActionListener {
                 setAllBtnsEnabled(false);
                 altairController.getFunctionBtns()[ON].setEnabled(true);
                 turnAllLEDsOff();
-                //TODO: turn status lights off
+                turnStatusLEDsOff();
             }
             case ON -> {
                 new Sound("beepbeep").start();
@@ -43,13 +43,14 @@ public class FunctionButtonListener implements ActionListener {
                 setAllBtnsEnabled(true);
                 altairController.getFunctionBtns()[ON].setEnabled(false);
                 flink();
-                //TODO: turn status lights on
+                turnStatusLEDsOn();
             }
             case STOP -> {
                 pushUpToggle(altairController.getFunctionToggles()[1]);
                 JButton source = (JButton) (e.getSource());
                 source.setEnabled(false);
                 altairController.getFunctionBtns()[RUN].setEnabled(true);
+                altairController.getStatusLEDs()[10].turnOn();
                 altairController.endGame();
             }
             case RUN -> {
@@ -57,9 +58,10 @@ public class FunctionButtonListener implements ActionListener {
                 JButton source = (JButton) (e.getSource());
                 source.setEnabled(false);
                 altairController.getFunctionBtns()[STOP].setEnabled(true);
+                altairController.getStatusLEDs()[10].turnOff();
                 altairController.startGame();
             }
-            case EXAMINE ->  {
+            case EXAMINE -> {
                 pushUpToggle(altairController.getFunctionToggles()[2]);
                 int value = altairController.examine();
                 System.out.println("Examined value is :" + value);
@@ -140,6 +142,20 @@ public class FunctionButtonListener implements ActionListener {
         });
         timer.setRepeats(false);
         timer.start();
+    }
+
+    private void turnStatusLEDsOff() {
+        altairController.getStatusLEDs()[2].turnOff();
+        altairController.getStatusLEDs()[4].turnOff();
+        altairController.getStatusLEDs()[8].turnOff();
+        altairController.getStatusLEDs()[10].turnOff();
+    }
+
+    private void turnStatusLEDsOn() {
+        altairController.getStatusLEDs()[2].turnOn();
+        altairController.getStatusLEDs()[4].turnOn();
+        altairController.getStatusLEDs()[8].turnOn();
+        altairController.getStatusLEDs()[10].turnOn();
     }
 
     private void turnAllLEDsOn() {
