@@ -62,38 +62,38 @@ public class FunctionButtonListener implements ActionListener {
                 altairController.startGame();
             }
             case EXAMINE -> {
-                pushUpToggle(altairController.getFunctionToggles()[2]);
+                pushUpToggle(altairController.getFunctionToggles()[3]);
                 int value = altairController.examine();
                 System.out.println("Examined value is :" + value);
                 showDLEDs(value);
                 showALEDs();
             }
             case EXAMINE_NEXT -> {
-                pullDownToggle(altairController.getFunctionToggles()[2]);
+                pullDownToggle(altairController.getFunctionToggles()[3]);
                 int value = altairController.examineNext();
                 showDLEDs(value);
                 showALEDs();
             }
             case DEPOSIT -> {
-                pushUpToggle(altairController.getFunctionToggles()[3]);
+                pushUpToggle(altairController.getFunctionToggles()[4]);
                 int value = altairController.deposit();
                 showDLEDs(value);
             }
             case DEPOSIT_NEXT -> {
-                pullDownToggle(altairController.getFunctionToggles()[3]);
+                pullDownToggle(altairController.getFunctionToggles()[4]);
                 int value = altairController.depositNext();
                 showDLEDs(value);
                 showALEDs();
             }
             case RESET -> {
-                pushUpToggle(altairController.getFunctionToggles()[4]);
+                pushUpToggle(altairController.getFunctionToggles()[5]);
                 altairController.reset();
                 showALEDs();
                 showDLEDs(0);
                 flink();
             }
             case CLR -> {
-                pullDownToggle(altairController.getFunctionToggles()[4]);
+                pullDownToggle(altairController.getFunctionToggles()[5]);
                 altairController.clear();
                 showALEDs();
                 showDLEDs(0);
