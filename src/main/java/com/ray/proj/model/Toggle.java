@@ -34,11 +34,10 @@ public class Toggle {
 
         if (isFunctionToggle) {
             label.setIcon(SWITCH_MID);
-            label.setBounds(x, y, width, height);
         } else {
             label.setIcon(SWITCH_DOWN);
-            label.setBounds(x, y, width, height);
         }
+        label.setBounds(x, y, width, height);
     }
 
     public JLabel getLabel() {

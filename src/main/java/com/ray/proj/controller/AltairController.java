@@ -18,7 +18,6 @@ public class AltairController extends BitManipulator {
 
     private final byte[] memory;  // byte array for memory data storage, represented by D0~D7 LEDs
     private final LED[] DLEDs;    // D0~D7 LEDs for presenting stored data
-    /**/
     private final LED[] statusLEDs;     //statusLEDs
     private final LED[] ALEDs;  // A0~A7 LEDs
     private byte ledMap;        // 8-bit map for LED 0~7. 0 represents turned-off. 1 represents turned-on.
@@ -33,12 +32,11 @@ public class AltairController extends BitManipulator {
     public AltairController(AltairComponents altairComponents) {
         DLEDs = altairComponents.getDLEDs();
         ALEDs = altairComponents.getALEDs();
-        /**/
         statusLEDs = altairComponents.getStatusLEDs();
         toggles = altairComponents.getToggleSwitches();
         functionBtns = altairComponents.getFunctionBtns();
         functionToggles = altairComponents.getFunctionToggles();
-        memory = new byte[256];
+        memory = new byte[MAX_VALUE + 1];
         ledMap = 0;
         rightToggleMap = 0;
         leftToggleMap = 0;
@@ -125,7 +123,7 @@ public class AltairController extends BitManipulator {
     public int toggle(int index) {
         if (index < 8) {
             rightToggleMap = reverseBitAt(rightToggleMap, index);
-            printMaps();
+//            printMaps();
             return getBitAt(rightToggleMap, index);
         } else {
             leftToggleMap = reverseBitAt(leftToggleMap, index - 8);

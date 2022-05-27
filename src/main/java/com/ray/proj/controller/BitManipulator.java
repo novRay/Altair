@@ -16,7 +16,7 @@ public abstract class BitManipulator {
         return (bitmap >> index) & 1;
     }
 
-    // Get actual value
+    // Get unsigned value
     protected int getValue(byte bitmap) {
         return Byte.toUnsignedInt(bitmap);
     }

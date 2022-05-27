@@ -31,7 +31,7 @@ public class FunctionButtonListener implements ActionListener {
             case OFF -> {
                 altairController.getFunctionToggles()[0].pushUp();
                 altairController.clear();
-                altairController.endGame(); // end running game
+                altairController.endGame(); // terminate running game
                 setAllBtnsEnabled(false);
                 altairController.getFunctionBtns()[ON].setEnabled(true);
                 turnAllLEDsOff();
@@ -137,9 +137,7 @@ public class FunctionButtonListener implements ActionListener {
 
     private void flink() {
         turnAllLEDsOn();
-        Timer timer = new Timer(650, e -> {
-            turnAllLEDsOff();
-        });
+        Timer timer = new Timer(650, e -> turnAllLEDsOff());
         timer.setRepeats(false);
         timer.start();
     }
@@ -170,18 +168,14 @@ public class FunctionButtonListener implements ActionListener {
 
     private void pullDownToggle(Toggle t) {
         t.pullDown();
-        Timer timer = new Timer(400, e -> {
-            t.reset();
-        });
+        Timer timer = new Timer(400, e -> t.reset());
         timer.setRepeats(false);
         timer.start();
     }
 
     private void pushUpToggle(Toggle t) {
         t.pushUp();
-        Timer timer = new Timer(400, e -> {
-            t.reset();
-        });
+        Timer timer = new Timer(400, e -> t.reset());
         timer.setRepeats(false);
         timer.start();
     }
